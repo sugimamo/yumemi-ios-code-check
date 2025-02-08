@@ -17,13 +17,11 @@ class RepositorySearchViewController: UITableViewController {
     /// リポジトリ情報
     var repositories: [Repository] = []
     /// 検索処理のタスク
-    var searchTask: URLSessionTask?
-    /// 検索ワード
-    var searchWord: String!
-    /// 検索するURL
-    var searchUrl: String!
+    private var searchTask: URLSessionTask?
     /// 選択したリポジトリのインデックス
-    var selectedIndex: Int!
+    var selectedIndex: Int?
+    /// 検索するURL
+    private static let searchUrl: String = "https://api.github.com/search/repositories?q=%@"
     
     /// 画面遷移のSegueIdentifier
     enum SegueIdentifier {
@@ -41,8 +39,7 @@ class RepositorySearchViewController: UITableViewController {
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // 画面遷移時の処理
-        if segue.identifier == SegueIdentifier.repositoryDetail {
-            let dtl = segue.destination as! RepositoryDetailViewController
+        if segue.identifier == SegueIdentifier.repositoryDetail, let dtl = segue.destination as? RepositoryDetailViewController {
             dtl.repositorySearchVC = self
         }
         
@@ -97,11 +94,10 @@ extension RepositorySearchViewController: UISearchBarDelegate {
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         // 検索ボタンが押された時に呼ばれる
-        searchWord = searchBar.text!
-        
-        if !searchWord.isEmpty {
-            searchUrl = "https://api.github.com/search/repositories?q=\(searchWord!)"
-            searchTask = URLSession.shared.dataTask(with: URL(string: searchUrl)!) { [weak self] (data, res, err) in
+        if let searchWord = searchBar.text, !searchWord.isEmpty {
+            let searchUrlString = String(format: RepositorySearchViewController.searchUrl, searchWord)
+            guard let searchUrl = URL(string: searchUrlString) else { return }
+            searchTask = URLSession.shared.dataTask(with: searchUrl) { [weak self] (data, res, err) in
                 guard let self = self else { return }
                 guard let data = data else { return }
                 guard let searchRepository = self.decodeToSearchRepository(from: data) else { return }

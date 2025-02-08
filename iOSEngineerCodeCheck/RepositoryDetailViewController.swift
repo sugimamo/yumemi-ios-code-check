@@ -31,8 +31,8 @@ class RepositoryDetailViewController: UIViewController {
     override func viewDidLoad() {
         // 画面読み込み時の処理
         super.viewDidLoad()
-        let repo = repositorySearchVC.repositories[repositorySearchVC.selectedIndex]
-        
+        guard let selectedIndex = repositorySearchVC.selectedIndex else { return }
+        let repo = repositorySearchVC.repositories[selectedIndex]
         languageLabel.text = "Written in \(repo.language ?? "Unknown")"
         starsCountLabel.text = "\(repo.stargazersCount) stars"
         watchersCountLabel.text = "\(repo.watchersCount) watchers"
