@@ -38,22 +38,21 @@ class RepositoryDetailViewController: UIViewController {
         watchersCountLabel.text = "\(repo.watchersCount) watchers"
         forksCountLabel.text = "\(repo.forksCount) forks"
         openIssueCountLabel.text = "\(repo.openIssuesCount) open issues"
-        getImage()
+        repositoryNameLable.text = repo.fullName
+        Task { @MainActor in
+            self.avatarImageView.image = await getAvatorImage(for: repo.owner.avatarUrl)
+        }
     }
     
     /// リポジトリのアバター画像を取得する
-    func getImage(){
-        let repo = repositorySearchVC.repositories[repositorySearchVC.selectedIndex]
-        
-        repositoryNameLable.text = repo.fullName
-        let owner = repo.owner
-        let imgURL = owner.avatarUrl
-        URLSession.shared.dataTask(with: imgURL) { (data, res, err) in
-            let img = UIImage(data: data!)!
-            DispatchQueue.main.async {
-                self.avatarImageView.image = img
-            }
-        }.resume()
+    func getAvatorImage(for url: URL) async -> UIImage?{
+        var image: UIImage? = nil
+        do {
+            let (data, _) = try await URLSession.shared.data(from: url)
+            image = UIImage(data: data)
+        } catch {
+            print(error.localizedDescription)
+        }
+        return image
     }
-    
 }
