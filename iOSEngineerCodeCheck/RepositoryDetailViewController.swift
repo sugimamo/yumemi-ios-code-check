@@ -39,7 +39,8 @@ class RepositoryDetailViewController: UIViewController {
         forksCountLabel.text = "\(repo.forksCount) forks"
         openIssueCountLabel.text = "\(repo.openIssuesCount) open issues"
         repositoryNameLable.text = repo.fullName
-        Task { @MainActor in
+        Task { @MainActor [weak self] in
+            guard let self = self else { return }
             self.avatarImageView.image = await getAvatorImage(for: repo.owner.avatarUrl)
         }
     }
