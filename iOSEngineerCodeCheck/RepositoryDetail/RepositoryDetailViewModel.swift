@@ -23,5 +23,13 @@ class RepositoryDetailViewModel: ObservableObject {
             await self.avatarImageModel.loadAvatarImage(url: repository.owner.avatarUrl)
         }
     }
+    
+    func openRepositoryUrl() {
+        UIApplication.shared.open(repository.repositoryURL)
+    }
+    
+    func getShareItems() -> [Any] {
+        return [repository.repositoryURL]
+    }
 }
 

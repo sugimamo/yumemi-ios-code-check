@@ -76,6 +76,14 @@ class iOSEngineerCodeCheckUITests: XCTestCase {
     var detailIssueLabel: XCUIElement {
         app.staticTexts.element(matching: .staticText, identifier: "RepositoryDetailView.IssueLabel")
     }
+    
+    var detailBrowseButton: XCUIElement {
+        app.buttons.element(matching: .button, identifier: "RepositoryDetailView.BrowseButton")
+    }
+    
+    var detailShareButton: XCUIElement {
+        app.buttons.element(matching: .button, identifier: "RepositoryDetailView.ShareButton")
+    }
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -123,6 +131,23 @@ class iOSEngineerCodeCheckUITests: XCTestCase {
         XCTAssert(detailWatchLabel.exists)
         XCTAssert(detailForkLabel.exists)
         XCTAssert(detailIssueLabel.exists)
+    }
+    
+    func testDetailRepositoryBrowseAction() throws {
+        try testSearchRepository()
+        sleep(1)
+        XCTAssert(detailBrowseButton.exists)
+        detailBrowseButton.tap()
+        let safari = XCUIApplication(bundleIdentifier: "com.apple.mobilesafari")
+        XCTAssertTrue(safari.wait(for: .runningForeground, timeout: 5))
+    }
+    
+    func testDetailRepositoryShareAction() throws {
+        try testSearchRepository()
+        sleep(1)
+        XCTAssert(detailShareButton.exists)
+        detailShareButton.tap()
+        XCTAssert(app.otherElements["ActivityListView"].waitForExistence(timeout: 5))
     }
 
 }
