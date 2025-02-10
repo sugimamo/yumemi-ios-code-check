@@ -27,6 +27,9 @@ class iOSEngineerCodeCheckUITests: XCTestCase {
             app.keyboards.firstMatch.buttons.element(matching: .button, identifier: "検索")
         }
     }
+    var searchBarDeleteButton: XCUIElement {
+        app.searchFields.firstMatch.buttons.element(matching: .button, identifier: "Clear text")
+    }
     
     var repositoryCellNameLabel: XCUIElement {
         app.staticTexts.element(matching: .staticText, identifier: "RepositoryCell.NameLabel")
@@ -119,6 +122,17 @@ class iOSEngineerCodeCheckUITests: XCTestCase {
         XCTAssert(repositoryCellForkLabel.exists)
         XCTAssert(repositoryCellIssueLabel.exists)
         searchTableView.cells.element(boundBy: 0).tap()
+    }
+    
+    func testSearchRepositoryReset() throws {
+        app.launch()
+        searchBar.tap()
+        searchBar.typeText("swift")
+        searchKeyboardButton.tap()
+        sleep(3)
+        XCTAssert(searchTableView.cells.count > 0)
+        searchBarDeleteButton.tap()
+        XCTAssert(searchTableView.cells.count == 0)
     }
     
     func testDetailRepository() throws {

@@ -13,7 +13,7 @@ import UIKit
 class RepositorySearchViewModel: ObservableObject {
     
     /// リポジトリ情報
-    var repositories: [Repository] = []
+    @Published var repositories: [Repository] = []
     /// 検索処理のタスク
     private var searchTask: Task<Void, Never>?
     /// 選択したリポジトリのインデックス
@@ -59,6 +59,14 @@ class RepositorySearchViewModel: ObservableObject {
                 print(error.localizedDescription)
             }
             searchedNotice.send()
+        }
+    }
+    /// 検索バーのテキストが変更されたときの処理
+    func searchBarTextDidChange(_ searchText: String) {
+        cancelSearchTask()
+        if searchText.isEmpty {
+            // 検索ワードが空の場合はリポジトリをクリアする
+            repositories.removeAll()
         }
     }
 }
