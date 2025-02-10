@@ -13,13 +13,15 @@ import UIKit
 class RepositorySearchViewModel: ObservableObject {
     
     /// リポジトリ情報
-    @Published var repositories: [Repository] = []
+    var repositories: [Repository] = []
     /// 検索処理のタスク
     private var searchTask: Task<Void, Never>?
     /// 選択したリポジトリのインデックス
     var selectedIndex: Int?
     /// API通信用
     private let apiClient = RepositorySearchAPI()
+    
+    let searchedNotice: PassthroughSubject<Void, Never> = .init()
     
     /// 画面遷移のSegueIdentifier
     enum SegueIdentifier {
@@ -56,6 +58,7 @@ class RepositorySearchViewModel: ObservableObject {
             } catch {
                 print(error.localizedDescription)
             }
+            searchedNotice.send()
         }
     }
 }

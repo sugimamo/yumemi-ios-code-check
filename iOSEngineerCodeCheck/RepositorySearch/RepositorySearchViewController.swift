@@ -18,18 +18,25 @@ class RepositorySearchViewController: UITableViewController {
     var viewModel: RepositorySearchViewModel = .init()
     private var cancellables: Set<AnyCancellable> = []
     
+    private lazy var loadingDialog: LoadingDialog = .init(self)
+    
     override func viewDidLoad() {
         // 画面読み込み時の処理
         super.viewDidLoad()
         repositorySearchBar.placeholder = "GitHubのリポジトリを検索できます"
         repositorySearchBar.text = ""
         repositorySearchBar.delegate = self
-        
-        viewModel.$repositories
+        viewModel.searchedNotice
             .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] _ in
+                self?.loadingDialog.dismiss()
                 self?.tableView.reloadData()
             }).store(in: &cancellables)
+        
+        tableView.register(
+            UINib(nibName: "RepositoryCell", bundle: nil),
+            forCellReuseIdentifier: "RepositoryCell")
+        
         setAccesibilityId()
     }
     
@@ -48,12 +55,16 @@ class RepositorySearchViewController: UITableViewController {
         return viewModel.repositories.count
     }
     
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        // セルの高さ
+        return 80
+    }
+    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         // セルの表示
-        let cell = UITableViewCell()
+        let cell = tableView.dequeueReusableCell(withIdentifier: "RepositoryCell", for: indexPath) as! RepositoryCell
         let rp = viewModel.repositories[indexPath.row]
-        cell.textLabel?.text = rp.fullName
-        cell.detailTextLabel?.text = rp.language
+        cell.setupCell(repository: rp)
         cell.tag = indexPath.row
         return cell
     }
@@ -79,6 +90,11 @@ extension RepositorySearchViewController: UISearchBarDelegate {
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         // 検索ボタンが押された時に呼ばれる
+        // キーボードを閉じる
+        searchBar.resignFirstResponder()
+        loadingDialog.LoadingMessage(title: "検索中", message: "少々お待ちください") { [weak self] in
+            self?.viewModel.cancelSearchTask()
+        }
         viewModel.searchRepository(with: searchBar.text)
     }
 }
