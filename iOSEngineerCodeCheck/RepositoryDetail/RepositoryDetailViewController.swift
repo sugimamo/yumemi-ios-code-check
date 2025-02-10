@@ -44,5 +44,16 @@ class RepositoryDetailViewController: UIViewController {
             .sink(receiveValue: { [weak self] image in
                 self?.avatarImageView.image = image
             }).store(in: &cancellables)
+        setAccessibilityId()
+    }
+    
+    func setAccessibilityId() {
+        avatarImageView.accessibilityIdentifier = "RepositoryDetailView.AvatarImageView"
+        repositoryNameLable.accessibilityIdentifier = "RepositoryDetailView.RepositoryNameLabel"
+        languageLabel.accessibilityIdentifier = "RepositoryDetailView.LanguageLabel"
+        starsCountLabel.accessibilityIdentifier = "RepositoryDetailView.StarLabel"
+        watchersCountLabel.accessibilityIdentifier = "RepositoryDetailView.WatchLabel"
+        forksCountLabel.accessibilityIdentifier = "RepositoryDetailView.ForkLabel"
+        openIssueCountLabel.accessibilityIdentifier = "RepositoryDetailView.IssueLabel"
     }
 }

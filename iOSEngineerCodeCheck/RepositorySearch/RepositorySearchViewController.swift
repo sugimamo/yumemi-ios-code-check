@@ -15,7 +15,7 @@ class RepositorySearchViewController: UITableViewController {
     /// リポジトリ検索バー
     @IBOutlet weak var repositorySearchBar: UISearchBar!
     /// ViewModel
-    private var viewModel: RepositorySearchViewModel = .init()
+    var viewModel: RepositorySearchViewModel = .init()
     private var cancellables: Set<AnyCancellable> = []
     
     override func viewDidLoad() {
@@ -30,6 +30,12 @@ class RepositorySearchViewController: UITableViewController {
             .sink(receiveValue: { [weak self] _ in
                 self?.tableView.reloadData()
             }).store(in: &cancellables)
+        setAccesibilityId()
+    }
+    
+    func setAccesibilityId() {
+        repositorySearchBar.searchTextField.accessibilityIdentifier = "RepositorySearchView.SearchBar.SearchTextField"
+        tableView.accessibilityIdentifier = "RepositorySearchView.SearchTableView"
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

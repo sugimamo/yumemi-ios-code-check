@@ -9,6 +9,53 @@
 import XCTest
 
 class iOSEngineerCodeCheckUITests: XCTestCase {
+    
+    private let app: XCUIApplication = .init()
+    
+    var searchBar: XCUIElement {
+        app.searchFields.element(matching: .searchField, identifier: "RepositorySearchView.SearchBar.SearchTextField")
+    }
+    
+    var searchTableView: XCUIElement {
+        app.tables.element(matching: .table, identifier: "RepositorySearchView.SearchTableView")
+    }
+    
+    var searchKeyboardButton: XCUIElement {
+        if app.keyboards.firstMatch.buttons.element(matching: .button, identifier: "Search").waitForExistence(timeout: 1) {
+            app.keyboards.firstMatch.buttons.element(matching: .button, identifier: "Search")
+        } else {
+            app.keyboards.firstMatch.buttons.element(matching: .button, identifier: "検索")
+        }
+    }
+    
+    
+    var detailAvatorImageView: XCUIElement {
+        app.images.element(matching: .image, identifier: "RepositoryDetailView.AvatarImageView")
+    }
+    
+    var detailRepositoryNameLabel: XCUIElement {
+        app.staticTexts.element(matching: .staticText, identifier: "RepositoryDetailView.RepositoryNameLabel")
+    }
+    
+    var detailLanguageLabel: XCUIElement {
+        app.staticTexts.element(matching: .staticText, identifier: "RepositoryDetailView.LanguageLabel")
+    }
+    
+    var detailStarLabel: XCUIElement {
+        app.staticTexts.element(matching: .staticText, identifier: "RepositoryDetailView.StarLabel")
+    }
+    
+    var detailWatchLabel: XCUIElement {
+        app.staticTexts.element(matching: .staticText, identifier: "RepositoryDetailView.WatchLabel")
+    }
+    
+    var detailForkLabel: XCUIElement {
+        app.staticTexts.element(matching: .staticText, identifier: "RepositoryDetailView.ForkLabel")
+    }
+    
+    var detailIssueLabel: XCUIElement {
+        app.staticTexts.element(matching: .staticText, identifier: "RepositoryDetailView.IssueLabel")
+    }
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -22,22 +69,35 @@ class iOSEngineerCodeCheckUITests: XCTestCase {
     override func tearDownWithError() throws {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
+    
 
-    func testExample() throws {
-        // UI tests must launch the application that they test.
-        let app = XCUIApplication()
+    func testSearchViewInit() throws {
         app.launch()
-
-        // Use recording to get started writing UI tests.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+        XCTAssert(searchBar.exists)
+        XCTAssert(searchBar.placeholderValue == "GitHubのリポジトリを検索できます")
+        XCTAssert(searchTableView.exists)
+    }
+    
+    func testSearchRepository() throws {
+        app.launch()
+        searchBar.tap()
+        searchBar.typeText("swift")
+        searchKeyboardButton.tap()
+        sleep(3)
+        XCTAssert(searchTableView.cells.count > 0)
+        searchTableView.cells.element(boundBy: 0).tap()
+    }
+    
+    func testDetailRepository() throws {
+        try testSearchRepository()
+        sleep(1)
+        XCTAssert(detailAvatorImageView.exists)
+        XCTAssert(detailRepositoryNameLabel.exists)
+        XCTAssert(detailLanguageLabel.exists)
+        XCTAssert(detailStarLabel.exists)
+        XCTAssert(detailWatchLabel.exists)
+        XCTAssert(detailForkLabel.exists)
+        XCTAssert(detailIssueLabel.exists)
     }
 
-    func testLaunchPerformance() throws {
-        if #available(macOS 10.15, iOS 13.0, tvOS 13.0, *) {
-            // This measures how long it takes to launch your application.
-            measure(metrics: [XCTApplicationLaunchMetric()]) {
-                XCUIApplication().launch()
-            }
-        }
-    }
 }
