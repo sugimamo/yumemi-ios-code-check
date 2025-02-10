@@ -26,6 +26,10 @@ class RepositoryDetailViewController: UIViewController {
     @IBOutlet weak var forksCountLabel: UILabel!
     /// オープンイシューの数表示用
     @IBOutlet weak var openIssueCountLabel: UILabel!
+    /// ブラウザで開くボタン
+    @IBOutlet weak var brawseButton: UIButton!
+    /// リンク共有ボタン
+    @IBOutlet weak var shareButton: UIButton!
     /// リポジトリ検索画面のViewController
     var viewModel: RepositoryDetailViewModel!
     private var cancellables: Set<AnyCancellable> = []
@@ -47,6 +51,7 @@ class RepositoryDetailViewController: UIViewController {
         setAccessibilityId()
     }
     
+    /// テスト用のIDの設定
     func setAccessibilityId() {
         avatarImageView.accessibilityIdentifier = "RepositoryDetailView.AvatarImageView"
         repositoryNameLable.accessibilityIdentifier = "RepositoryDetailView.RepositoryNameLabel"
@@ -55,5 +60,20 @@ class RepositoryDetailViewController: UIViewController {
         watchersCountLabel.accessibilityIdentifier = "RepositoryDetailView.WatchLabel"
         forksCountLabel.accessibilityIdentifier = "RepositoryDetailView.ForkLabel"
         openIssueCountLabel.accessibilityIdentifier = "RepositoryDetailView.IssueLabel"
+        brawseButton.accessibilityIdentifier = "RepositoryDetailView.BrowseButton"
+        shareButton.accessibilityIdentifier = "RepositoryDetailView.ShareButton"
+    }
+    
+    /// ブラウズボタンタップ時の処理
+    @IBAction func tappedBrowseButton(_ sender: UIButton) {
+        viewModel.openRepositoryUrl()
+    }
+    
+    /// 共有ボタンタップ時の処理
+    @IBAction func tappedShareButton(_ sender: UIButton) {
+        let activityItems = viewModel.getShareItems()
+        let activityViewController = UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
+        activityViewController.popoverPresentationController?.sourceView = sender
+        present(activityViewController, animated: true, completion: nil)
     }
 }

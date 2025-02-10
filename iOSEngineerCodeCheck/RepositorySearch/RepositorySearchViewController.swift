@@ -32,6 +32,11 @@ class RepositorySearchViewController: UITableViewController {
                 self?.loadingDialog.dismiss()
                 self?.tableView.reloadData()
             }).store(in: &cancellables)
+        viewModel.$repositories
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] _ in
+                self?.tableView.reloadData()
+            }).store(in: &cancellables)
         
         tableView.register(
             UINib(nibName: "RepositoryCell", bundle: nil),
@@ -79,13 +84,12 @@ class RepositorySearchViewController: UITableViewController {
 extension RepositorySearchViewController: UISearchBarDelegate {
     func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
         // 検索バーがタップされた時に呼ばれる
-        searchBar.text = ""
         return true
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         // 検索バーの文字列が変更された時に呼ばれる
-        viewModel.cancelSearchTask()
+        viewModel.searchBarTextDidChange(searchText)
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
