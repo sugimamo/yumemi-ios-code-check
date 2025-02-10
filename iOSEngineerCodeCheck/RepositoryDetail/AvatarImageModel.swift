@@ -17,7 +17,9 @@ struct AvatarImageModel {
     /// アバターの画像をロードする。
     func loadAvatarImage(url: URL) async {
         do {
+            print("loadAvatarImage")
             let avatarImage = try await load(url: url.description)
+            print("loaded")
             loadedImageNotice.send(avatarImage)
         } catch {
             print(error.localizedDescription)
