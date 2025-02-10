@@ -39,7 +39,7 @@ class RepositoryDetailViewController: UIViewController {
         forksCountLabel.text = "\(viewModel.repository.forksCount) forks"
         openIssueCountLabel.text = "\(viewModel.repository.openIssuesCount) open issues"
         repositoryNameLable.text = viewModel.repository.fullName
-        viewModel.$avatarImage
+        viewModel.avatarImageModel.loadedImageNotice
             .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] image in
                 self?.avatarImageView.image = image

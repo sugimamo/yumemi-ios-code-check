@@ -11,29 +11,17 @@ import Combine
 import UIKit
 
 class RepositoryDetailViewModel: ObservableObject {
-    
     /// リポジトリ情報
     let repository: Repository
     /// アバター画像
-    @Published var avatarImage: UIImage? = nil
+    let avatarImageModel: AvatarImageModel = .init()
     
     init(repository: Repository) {
         self.repository = repository
         Task { @MainActor [weak self] in
             guard let self = self else { return }
-            self.avatarImage = await getAvatorImage(for: repository.owner.avatarUrl)
+            await self.avatarImageModel.loadAvatarImage(url: repository.owner.avatarUrl)
         }
-    }
-    
-    /// リポジトリのアバター画像を取得する
-    func getAvatorImage(for url: URL) async -> UIImage?{
-        var image: UIImage? = nil
-        do {
-            let (data, _) = try await URLSession.shared.data(from: url)
-            image = UIImage(data: data)
-        } catch {
-            print(error.localizedDescription)
-        }
-        return image
     }
 }
+

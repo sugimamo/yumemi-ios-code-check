@@ -14,6 +14,7 @@ enum APIError: Error {
     case invalidUrl
     case httpStatus(code: Int)
     case decode
+    case notImageData
     case other(message: String)
 }
 
@@ -28,6 +29,8 @@ extension APIError: LocalizedError {
             return "Httpレスポンスエラー code: \(code)"
         case .decode:
             return "データのデコードに失敗しました"
+        case .notImageData:
+            return "画像データではありません"
         case .other(let message):
             return message
         }
