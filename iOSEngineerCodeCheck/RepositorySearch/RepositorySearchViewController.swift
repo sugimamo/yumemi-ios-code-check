@@ -18,15 +18,18 @@ class RepositorySearchViewController: UITableViewController {
     var viewModel: RepositorySearchViewModel = .init()
     private var cancellables: Set<AnyCancellable> = []
     
+    private lazy var loadingDialog: LoadingDialog = .init(self)
+    
     override func viewDidLoad() {
         // 画面読み込み時の処理
         super.viewDidLoad()
         repositorySearchBar.placeholder = "GitHubのリポジトリを検索できます"
         repositorySearchBar.text = ""
         repositorySearchBar.delegate = self
-        viewModel.$repositories
+        viewModel.searchedNotice
             .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] _ in
+                self?.loadingDialog.dismiss()
                 self?.tableView.reloadData()
             }).store(in: &cancellables)
         
@@ -87,6 +90,11 @@ extension RepositorySearchViewController: UISearchBarDelegate {
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         // 検索ボタンが押された時に呼ばれる
+        // キーボードを閉じる
+        searchBar.resignFirstResponder()
+        loadingDialog.LoadingMessage(title: "検索中", message: "少々お待ちください") { [weak self] in
+            self?.viewModel.cancelSearchTask()
+        }
         viewModel.searchRepository(with: searchBar.text)
     }
 }
