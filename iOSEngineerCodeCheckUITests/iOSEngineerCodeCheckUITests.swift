@@ -28,6 +28,26 @@ class iOSEngineerCodeCheckUITests: XCTestCase {
         }
     }
     
+    var repositoryCellNameLabel: XCUIElement {
+        app.staticTexts.element(matching: .staticText, identifier: "RepositoryCell.NameLabel")
+    }
+    
+    var repositoryCellStarLabel: XCUIElement {
+        app.staticTexts.element(matching: .staticText, identifier: "RepositoryCell.StarLabel")
+    }
+    
+    var repositoryCellWatchLabel: XCUIElement {
+        app.staticTexts.element(matching: .staticText, identifier: "RepositoryCell.WatchLabel")
+    }
+    
+    var repositoryCellForkLabel: XCUIElement {
+        app.staticTexts.element(matching: .staticText, identifier: "RepositoryCell.ForkLabel")
+    }
+    
+    var repositoryCellIssueLabel: XCUIElement {
+        app.staticTexts.element(matching: .staticText, identifier: "RepositoryCell.IssueLabel")
+    }
+    
     
     var detailAvatorImageView: XCUIElement {
         app.images.element(matching: .image, identifier: "RepositoryDetailView.AvatarImageView")
@@ -85,6 +105,11 @@ class iOSEngineerCodeCheckUITests: XCTestCase {
         searchKeyboardButton.tap()
         sleep(3)
         XCTAssert(searchTableView.cells.count > 0)
+        XCTAssert(repositoryCellNameLabel.exists)
+        XCTAssert(repositoryCellStarLabel.exists)
+        XCTAssert(repositoryCellWatchLabel.exists)
+        XCTAssert(repositoryCellForkLabel.exists)
+        XCTAssert(repositoryCellIssueLabel.exists)
         searchTableView.cells.element(boundBy: 0).tap()
     }
     

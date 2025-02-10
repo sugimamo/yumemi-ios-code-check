@@ -26,6 +26,7 @@ class RepositoryCell: UITableViewCell {
         issueCountLabel.text = "\(repository.openIssuesCount)"
         setCornerRadius()
         setShadow()
+        setAccessibilityId()
     }
     
     func setCornerRadius() {
@@ -37,6 +38,14 @@ class RepositoryCell: UITableViewCell {
         mainView.layer.shadowColor = UIColor.gray.cgColor
         mainView.layer.shadowOpacity = 0.6
         mainView.layer.shadowRadius = 4
+    }
+    
+    func setAccessibilityId() {
+        nameLabel.accessibilityIdentifier = "RepositoryCell.NameLabel"
+        starCountLabel.accessibilityIdentifier = "RepositoryCell.StarLabel"
+        watchCountLabel.accessibilityIdentifier = "RepositoryCell.WatchLabel"
+        forkCountLabel.accessibilityIdentifier = "RepositoryCell.ForkLabel"
+        issueCountLabel.accessibilityIdentifier = "RepositoryCell.IssueLabel"
     }
 }
 
